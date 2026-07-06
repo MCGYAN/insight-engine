@@ -12,7 +12,7 @@ export const surveyConfig: SurveyConfig = {
 
 /** App settings — links, researcher profile */
 export const appConfig = {
-  playbookUrl: '/7-mistakes-costing-you-money-crypto-guide.pdf',
+  playbookUrl: '/ghanian-crypto-users-guide-paying-less-in-fees.pdf',
   whatsappCommunityUrl: 'https://chat.whatsapp.com/JGZt4EdAhDNKC30iHF8F9v',
   researcher: {
     name: 'Gyan Anthony Kwame Takyi',

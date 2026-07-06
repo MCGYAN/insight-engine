@@ -4,7 +4,7 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Free Crypto Money Assessment | AfriMoney',
   description:
-    'Take a free 1-minute assessment and unlock: 7 Mistakes That Could Be Costing You Money Every Time You Use Crypto.',
+    'Take a free 1-minute assessment and unlock: The Ghanaian Crypto Users Guide to Paying Less in Fees.',
   icons: {
     icon: '/favicon.svg',
   },

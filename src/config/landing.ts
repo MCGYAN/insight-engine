@@ -3,10 +3,10 @@
 export const landingConfig = {
   brand: 'AfriMoney',
   guide: {
-    title: '7 Mistakes That Could Be Costing You Money Every Time You Use Crypto',
-    shortTitle: '7 Crypto Money Mistakes Guide',
-    fileName: '7-Mistakes-That-Could-Be-Costing-You-Money-Every-Time-You-Use-Crypto.pdf',
-    url: '/7-mistakes-costing-you-money-crypto-guide.pdf',
+    title: 'The Ghanaian Crypto Users Guide to Paying Less in Fees',
+    shortTitle: 'Ghanaian Crypto Fees Guide',
+    fileName: 'The_Ghanaian_Crypto_Users_Guide_to_Paying_Less_in_Fees_Premium.pdf',
+    url: '/ghanian-crypto-users-guide-paying-less-in-fees.pdf',
   },
   hero: {
     badge: 'Free · About 1 minute · For crypto users in Ghana',
