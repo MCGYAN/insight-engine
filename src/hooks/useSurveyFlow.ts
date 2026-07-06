@@ -4,6 +4,7 @@ import {
   buildAssessmentFlow,
 } from '@/config/fieldMapping'
 import { clearProgress, loadProgress, saveProgress } from '@/services/storage'
+import { sanitizeUserInput, sanitizeUserInputArray } from '@/utils/inputSanitizer'
 import type { Question } from '@/types/Question'
 import type {
   ActiveQuestion,
@@ -103,8 +104,13 @@ export function useSurveyFlow() {
 
   const setAnswer = useCallback(
     (questionId: string, value: string | string[]) => {
+      const sanitized =
+        typeof value === 'string'
+          ? sanitizeUserInput(value, questionId)
+          : sanitizeUserInputArray(value, questionId)
+
       setAnswers((prev) => {
-        const next = { ...prev, [questionId]: value }
+        const next = { ...prev, [questionId]: sanitized }
 
         if (questionId === 'q1' && value !== 'other') delete next.q1_other
         if (questionId === 'q3' && value !== 'other') delete next.q3_other

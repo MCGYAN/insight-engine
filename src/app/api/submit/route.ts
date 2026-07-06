@@ -1,10 +1,41 @@
 import { integrationConfig } from '@/config/integration'
+import { validateSubmissionPayload } from '@/services/submissionValidator'
 import { NextResponse } from 'next/server'
 
 interface ScriptResponse {
   success?: boolean
   error?: string
   message?: string
+}
+
+const RATE_LIMIT_WINDOW_MS = 60_000
+const RATE_LIMIT_MAX = 15
+
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>()
+
+function getClientIp(request: Request): string {
+  const forwarded = request.headers.get('x-forwarded-for')
+  if (forwarded) {
+    return forwarded.split(',')[0]?.trim() || 'unknown'
+  }
+  return request.headers.get('x-real-ip')?.trim() || 'unknown'
+}
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const entry = rateLimitStore.get(ip)
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitStore.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
+    return false
+  }
+
+  if (entry.count >= RATE_LIMIT_MAX) {
+    return true
+  }
+
+  entry.count += 1
+  return false
 }
 
 export async function POST(request: Request) {
@@ -17,12 +48,28 @@ export async function POST(request: Request) {
     )
   }
 
-  let payload: unknown
+  const clientIp = getClientIp(request)
+  if (isRateLimited(clientIp)) {
+    return NextResponse.json(
+      { success: false, error: 'Too many submissions. Please try again later.' },
+      { status: 429 },
+    )
+  }
+
+  let rawPayload: unknown
   try {
-    payload = await request.json()
+    rawPayload = await request.json()
   } catch {
     return NextResponse.json(
       { success: false, error: 'Invalid submission payload.' },
+      { status: 400 },
+    )
+  }
+
+  const validation = validateSubmissionPayload(rawPayload)
+  if (!validation.ok) {
+    return NextResponse.json(
+      { success: false, error: validation.error },
       { status: 400 },
     )
   }
@@ -31,7 +78,7 @@ export async function POST(request: Request) {
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(validation.payload),
       redirect: 'follow',
     })
 

@@ -5,27 +5,88 @@
  *   Execute as: Me
  *   Who has access: Anyone
  *
- * The script creates column headers from field names on first submission,
- * then appends rows on subsequent submissions. New fields are added as columns.
+ * Security: whitelists field names, sanitizes values, and blocks formula injection.
  */
+
+var ALLOWED_FIELD_KEYS = [
+  'branchId',
+  'trigger',
+  'currentSolution',
+  'reasonForChoice',
+  'biggestFriction',
+  'desiredImprovement',
+  'frequency',
+  'currency',
+  'transactionAmount',
+  'customerSegment',
+  'whatsappNumber',
+];
+
+var FIELD_MAX_LENGTH = {
+  branchId: 220,
+  trigger: 500,
+  currentSolution: 200,
+  reasonForChoice: 500,
+  biggestFriction: 2000,
+  desiredImprovement: 2000,
+  frequency: 50,
+  currency: 50,
+  transactionAmount: 30,
+  customerSegment: 200,
+  whatsappNumber: 20,
+};
+
+var MAX_USER_AGENT_LENGTH = 500;
+var MAX_SURVEY_ID_LENGTH = 100;
+var MAX_DURATION_MS = 86400000;
 
 function doPost(e) {
   try {
-    const payload = JSON.parse(e.postData.contents);
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var payload = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
 
-    const rowData = {
-      submittedAt: payload.submittedAt || new Date().toISOString(),
-      surveyId: payload.surveyId || '',
-      branchId: payload.branchId || '',
-      durationMs: payload.durationMs || 0,
-      userAgent: payload.userAgent || '',
+    var surveyId = sanitizeString(payload.surveyId, MAX_SURVEY_ID_LENGTH);
+    if (!surveyId) {
+      return jsonResponse({ success: false, error: 'Invalid survey identifier.' });
+    }
+
+    var branchId = payload.branchId ? sanitizeString(payload.branchId, 220) : '';
+    var submittedAt = payload.submittedAt
+      ? sanitizeString(payload.submittedAt, 40)
+      : new Date().toISOString();
+    var durationMs = Number(payload.durationMs);
+    if (!isFinite(durationMs) || durationMs < 0 || durationMs > MAX_DURATION_MS) {
+      return jsonResponse({ success: false, error: 'Invalid duration value.' });
+    }
+
+    var userAgent = sanitizeString(payload.userAgent || '', MAX_USER_AGENT_LENGTH);
+
+    var rowData = {
+      submittedAt: submittedAt,
+      surveyId: surveyId,
+      branchId: branchId,
+      durationMs: Math.round(durationMs),
+      userAgent: userAgent,
     };
 
     if (payload.fields && typeof payload.fields === 'object') {
-      Object.keys(payload.fields).forEach(function (key) {
-        rowData[key] = payload.fields[key];
-      });
+      var keys = Object.keys(payload.fields);
+      if (keys.length > ALLOWED_FIELD_KEYS.length) {
+        return jsonResponse({ success: false, error: 'Too many fields submitted.' });
+      }
+
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        if (ALLOWED_FIELD_KEYS.indexOf(key) === -1) {
+          return jsonResponse({ success: false, error: 'Unexpected field: ' + key });
+        }
+
+        var maxLen = FIELD_MAX_LENGTH[key] || 500;
+        var value = sanitizeString(String(payload.fields[key]), maxLen);
+        if (value) {
+          rowData[key] = value;
+        }
+      }
     }
 
     appendRowWithHeaders(sheet, rowData);
@@ -34,6 +95,24 @@ function doPost(e) {
   } catch (err) {
     return jsonResponse({ success: false, error: String(err.message || err) });
   }
+}
+
+function sanitizeString(value, maxLength) {
+  if (value === null || value === undefined) return '';
+  var str = String(value)
+    .replace(/\0/g, '')
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+    .replace(/<[^>]*>/g, '')
+    .trim();
+
+  if (str.length > maxLength) return '';
+
+  var trimmed = str.replace(/^\s+/, '');
+  if (/^[=+\-@\t\r|]/.test(trimmed)) {
+    str = "'" + str;
+  }
+
+  return str;
 }
 
 function appendRowWithHeaders(sheet, rowData) {

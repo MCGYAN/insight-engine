@@ -1,5 +1,6 @@
 import { buildQuestionIdToCanonicalMap } from '@/config/fieldMapping'
 import { resolveBranchId } from '@/config/branchWording'
+import { sanitizeSheetValue } from '@/services/submissionValidator'
 import type { SurveyAnswers, SurveySubmission } from '@/types/Survey'
 
 export interface SheetsPayload {
@@ -13,8 +14,10 @@ export interface SheetsPayload {
 
 function formatAnswerValue(value: string | string[] | undefined): string {
   if (value === undefined) return ''
-  if (Array.isArray(value)) return value.join(', ')
-  return String(value)
+  if (Array.isArray(value)) {
+    return value.map((v) => sanitizeSheetValue(String(v))).join(', ')
+  }
+  return sanitizeSheetValue(String(value))
 }
 
 let canonicalMapCache: Map<string, string> | null = null

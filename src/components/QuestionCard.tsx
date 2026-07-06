@@ -1,6 +1,7 @@
 'use client'
 
 import { CURRENCY_OPTIONS } from '@/config/assessment'
+import { INPUT_MAX_LENGTH } from '@/utils/inputSanitizer'
 import type { Question } from '@/types/Question'
 
 interface QuestionCardProps {
@@ -18,6 +19,7 @@ export function QuestionCard({
   onChange,
 }: QuestionCardProps) {
   const value = answers[question.id]
+  const maxLength = INPUT_MAX_LENGTH[question.id]
 
   if (question.type === 'currency_amount') {
     const currency = (answers['q8_currency'] as string) ?? ''
@@ -59,6 +61,7 @@ export function QuestionCard({
               value={currencyOther}
               onChange={(e) => onChange('q8_currency_other', e.target.value)}
               placeholder="e.g. ETH, SOL…"
+              maxLength={INPUT_MAX_LENGTH.q8_currency_other}
               className={inputBase}
             />
           </div>
@@ -76,6 +79,7 @@ export function QuestionCard({
               onChange('q8_amount', val)
             }}
             placeholder="e.g. 500"
+            maxLength={INPUT_MAX_LENGTH.q8_amount}
             className={inputBase}
           />
         </div>
@@ -93,6 +97,7 @@ export function QuestionCard({
           value={(value as string) ?? ''}
           onChange={(e) => onChange(question.id, e.target.value)}
           placeholder={question.placeholder}
+          maxLength={INPUT_MAX_LENGTH.q10}
           className={inputBase}
           aria-label={question.label}
         />
@@ -106,6 +111,7 @@ export function QuestionCard({
           onChange={(e) => onChange(question.id, e.target.value)}
           placeholder={question.placeholder}
           rows={3}
+          maxLength={maxLength}
           className={`${inputBase} resize-none`}
           aria-label={question.label}
         />
@@ -118,6 +124,7 @@ export function QuestionCard({
         value={(value as string) ?? ''}
         onChange={(e) => onChange(question.id, e.target.value)}
         placeholder={question.placeholder}
+        maxLength={maxLength}
         className={inputBase}
         aria-label={question.label}
       />
@@ -187,6 +194,7 @@ export function QuestionCard({
               onChange(question.inlineOther!.fieldId, e.target.value)
             }
             placeholder={question.inlineOther.placeholder}
+            maxLength={INPUT_MAX_LENGTH[question.inlineOther.fieldId]}
             className={inputBase}
             autoFocus
           />
