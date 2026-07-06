@@ -16,7 +16,7 @@ export const appConfig = {
   whatsappCommunityUrl: 'https://chat.whatsapp.com/JGZt4EdAhDNKC30iHF8F9v',
   researcher: {
     name: 'Gyan Anthony Kwame Takyi',
-    title: 'Independent Business & Growth Consultant',
+    title: 'Community Researcher or Business / Growth Consultant',
     bio: 'I help people in Ghana navigate crypto money decisions with more clarity and less risk. This assessment and guide were created from real conversations with everyday crypto users.',
     profileImage: '/anthony-takyi.png',
     profileUrl: 'https://www.linkedin.com/in/anthony-takyi',
