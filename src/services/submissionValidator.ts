@@ -1,6 +1,7 @@
 import type { SurveyBranchId } from '@/config/assessment'
 import { CANONICAL_FIELDS } from '@/config/fieldMapping'
 import { surveyConfig } from '@/config/survey'
+import { isValidPhoneNumber } from '@/utils/phoneValidation'
 import type { SheetsPayload } from './submissionFormatter'
 
 const ALLOWED_FIELD_KEYS = new Set<string>(Object.values(CANONICAL_FIELDS))
@@ -33,7 +34,6 @@ const FIELD_MAX_LENGTH: Record<string, number> = {
 const MAX_USER_AGENT_LENGTH = 500
 const MAX_SURVEY_ID_LENGTH = 100
 const MAX_DURATION_MS = 86_400_000
-const PHONE_PATTERN = /^\+?[\d\s\-()]{7,20}$/
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export type ValidationResult =
@@ -124,18 +124,20 @@ export function validateSubmissionPayload(body: unknown): ValidationResult {
       return { ok: false, error: `Invalid value for ${key}.` }
     }
 
+    const rawValue = String(value).trim()
+
+    if (
+      key === CANONICAL_FIELDS.phoneNumber &&
+      rawValue &&
+      !isValidPhoneNumber(rawValue)
+    ) {
+      return { ok: false, error: 'Invalid phone number format.' }
+    }
+
     const maxLength = FIELD_MAX_LENGTH[key] ?? 500
     const sanitized = asTrimmedString(value, maxLength)
     if (sanitized === null) {
       return { ok: false, error: `Value for ${key} is invalid or too long.` }
-    }
-
-    if (
-      key === CANONICAL_FIELDS.phoneNumber &&
-      sanitized &&
-      !PHONE_PATTERN.test(sanitized)
-    ) {
-      return { ok: false, error: 'Invalid phone number format.' }
     }
 
     if (

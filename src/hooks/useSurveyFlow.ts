@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { buildAssessmentFlow } from '@/config/fieldMapping'
 import { clearProgress, loadProgress, saveProgress } from '@/services/storage'
 import { sanitizeUserInput, sanitizeUserInputArray } from '@/utils/inputSanitizer'
+import { isValidPhoneNumber } from '@/utils/phoneValidation'
 import type { Question } from '@/types/Question'
 import type {
   ActiveQuestion,
@@ -46,7 +47,7 @@ function isContactValid(answers: SurveyAnswers): boolean {
   if (whatsapp !== 'yes' && whatsapp !== 'no') return false
 
   const phone = answers.q10_phone
-  if (typeof phone === 'string' && phone.trim() && !/^\+?[\d\s\-()]{7,20}$/.test(phone.trim())) {
+  if (typeof phone === 'string' && phone.trim() && !isValidPhoneNumber(phone)) {
     return false
   }
 

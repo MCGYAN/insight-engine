@@ -49,7 +49,7 @@ export function QuestionCard({
                 autoComplete="tel"
                 value={(answers.q10_phone as string) ?? ''}
                 onChange={(e) => onChange('q10_phone', e.target.value)}
-                placeholder="e.g. +233 XX XXX XXXX"
+                placeholder="e.g. 0554229375 or +233554229375"
                 maxLength={INPUT_MAX_LENGTH.q10_phone}
                 className={inputBase}
               />
