@@ -21,7 +21,7 @@ export function LandingPage({ onStart }: LandingPageProps) {
             {brand}
           </span>
           <CTAButton onClick={onStart} size="md">
-            Start Assessment
+            Get Checklist
           </CTAButton>
         </Container>
       </header>

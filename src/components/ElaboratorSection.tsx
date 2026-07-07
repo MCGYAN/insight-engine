@@ -27,7 +27,7 @@ const icons: Record<string, React.ReactNode> = {
 export function ElaboratorSection() {
   const { outcomes, steps, guide, guidePreview, trust } = landingConfig
   const highlightOutcomes = outcomes.items.filter((item) =>
-    ['fees', 'scams', 'decisions', 'confidence'].includes(item.id),
+    ['compare', 'verify', 'pressure', 'checklist'].includes(item.id),
   )
 
   return (

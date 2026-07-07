@@ -3,77 +3,85 @@
 export const landingConfig = {
   brand: 'AfriMoney',
   guide: {
-    title: 'The Ghanaian Crypto Users Guide to Paying Less in Fees',
-    shortTitle: 'Ghanaian Crypto Fees Guide',
-    fileName: 'The_Ghanaian_Crypto_Users_Guide_to_Paying_Less_in_Fees_Premium.pdf',
-    url: '/ghanian-crypto-users-guide-paying-less-in-fees.pdf',
+    title:
+      'What Every Regular Crypto User Should Check Before Converting Physical Cash',
+    shortTitle: 'Cash Conversion Checklist',
+    fileName:
+      'What-Every-Regular-Crypto-User-Should-Check-Before-Converting-Physical-Cash.pdf',
+    url: '/what-to-check-before-converting-cash-guide.pdf',
   },
   hero: {
     badge: 'Free · About 1 minute · For crypto users in Ghana',
-    headline: 'Stop making expensive crypto mistakes before they cost you money.',
+    headline:
+      'The next time you convert cash to crypto, you should not have to wonder if you left money on the table.',
     subheadline:
-      'Take a short professional assessment and unlock a practical guide designed to help you make smarter, safer crypto money decisions.',
-    cta: 'Start Free Assessment',
+      'Take a short assessment and unlock a practical checklist built for people who already move between physical cash and crypto. Know what to check before you confirm, so you keep more of what is yours.',
+    cta: 'Get My Free Checklist',
     ctaHint: 'Takes about 1 minute',
   },
   outcomes: {
-    title: 'What you\u2019ll learn to protect',
+    title: 'What this guide helps you avoid',
     subtitle:
-      'Most losses happen from avoidable mistakes, not bad luck. This guide helps you spot them early.',
+      'Most conversion losses do not come from bad luck. They come from rushing, trusting the wrong person, or accepting the first rate you see.',
     items: [
       {
-        id: 'fees',
-        label: 'Avoid unnecessary fees',
-        description: 'Know where hidden costs hide before you confirm a transaction.',
+        id: 'compare',
+        label: 'Know what you will actually receive',
+        description:
+          'Compare the final amount after every fee and rate, not just the headline number.',
         icon: 'fees',
       },
       {
-        id: 'scams',
-        label: 'Reduce scam risk',
-        description: 'Recognise the warning signs before money leaves your account.',
+        id: 'verify',
+        label: 'Verify who you are dealing with',
+        description:
+          'Only move money when you trust the person or service on the other side.',
         icon: 'shield',
       },
       {
-        id: 'decisions',
-        label: 'Make smarter money decisions',
-        description: 'Choose the right method for each situation, not just the fastest.',
-        icon: 'chart',
-      },
-      {
-        id: 'mistakes',
-        label: 'Understand common mistakes',
-        description: 'See the patterns that catch even experienced crypto users off guard.',
+        id: 'pressure',
+        label: 'Stop urgency from deciding for you',
+        description:
+          'Pressure is one of the biggest reasons people accept bad deals and costly mistakes.',
         icon: 'alert',
       },
       {
-        id: 'confidence',
-        label: 'Move money with greater confidence',
-        description: 'A clear checklist before every buy, sell, send, or conversion.',
+        id: 'checklist',
+        label: 'Walk in with a clear checklist',
+        description:
+          'Follow the same steps before every conversion, so nothing important gets skipped.',
         icon: 'check',
+      },
+      {
+        id: 'proof',
+        label: 'Keep proof until it is done',
+        description:
+          'Save receipts, screenshots, and transaction IDs until the conversion is complete.',
+        icon: 'chart',
       },
     ],
   },
   steps: {
     title: 'How it works',
-    subtitle: 'About one minute. Practical knowledge you can use right away.',
+    subtitle: 'One minute now. More confidence on your next conversion.',
     items: [
       {
         step: 1,
-        title: 'Complete the assessment',
+        title: 'Answer a few quick questions',
         description:
-          'Answer a few simple questions about how you use crypto, one at a time, at your own pace.',
+          'Tell us how you usually move between cash and crypto. It takes about a minute.',
       },
       {
         step: 2,
-        title: 'Unlock your guide instantly',
+        title: 'Download your free guide',
         description:
-          'Download your personalised guide the moment you finish. No waiting, no email gate.',
+          'Get the checklist instantly. No email gate, no waiting.',
       },
       {
         step: 3,
-        title: 'Apply the lessons',
+        title: 'Use it before your next conversion',
         description:
-          'Use the checklist and frameworks before your next transaction: buy, sell, send, or convert.',
+          'Run through the checks before you send cash, confirm a rate, or release crypto.',
       },
     ],
   },
@@ -102,24 +110,27 @@ export const landingConfig = {
   guidePreview: {
     title: 'Inside your guide',
     subtitle:
-      'A practical playbook, not theory. Written for real crypto money decisions in Ghana.',
+      'Not a beginner course. A quick reference for regular crypto users in Ghana who convert physical cash.',
     chapters: [
-      'Accepting the First Exchange Rate',
-      'Hidden Fees',
-      'Scam Prevention',
-      'Safer Crypto Transfers',
-      'Before Every Transaction Checklist',
+      'Compare the final amount you will receive',
+      'Verify who you are dealing with',
+      'Double check every transfer detail',
+      'Understand every cost',
+      'Keep proof',
+      'Challenge your routine',
+      'Never let urgency decide',
+      'Before Your Next Conversion Checklist',
     ],
   },
   about: {
     title: 'Who built this',
-    bio: 'I help people in Ghana navigate crypto money decisions with more clarity and less risk. This assessment and guide were created from real conversations with everyday crypto users, not from a textbook.',
+    bio: 'I help people in Ghana make clearer, safer decisions when moving between physical cash and crypto. This assessment and guide were built from real conversations with everyday users, not from a textbook.',
   },
   finalCta: {
-    headline: 'One minute now could save you far more later.',
+    headline: 'Your next conversion deserves a better decision.',
     subheadline:
-      'Complete the assessment and get your free guide before your next transaction.',
-    cta: 'Start Free Assessment',
+      'Complete the assessment and download the checklist before you move cash or crypto again.',
+    cta: 'Get My Free Checklist',
   },
   assessment: {
     continue: 'Continue',
@@ -127,11 +138,11 @@ export const landingConfig = {
     submitting: 'Saving your responses…',
   },
   success: {
-    headline: 'Your Guide Is Ready',
+    headline: 'Your Checklist Is Ready',
     headlineEmoji: '🎉',
     thankYou: 'Thank you for completing the assessment.',
-    body: 'Your responses will help us better understand how people in Ghana move money using cryptocurrency and improve future financial services.',
-    guideReady: 'Your free guide is ready below.',
+    body: 'Your responses help us understand how people in Ghana move between cash and crypto, so future tools can serve you better.',
+    guideReady: 'Your free guide is ready below. Use it before your next conversion.',
     download: 'Download Your Free Guide',
     community: {
       title: 'Stay Updated (Optional)',
