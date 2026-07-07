@@ -21,33 +21,32 @@ export const landingConfig = {
   },
   outcomes: {
     title: 'What this guide helps you avoid',
-    subtitle:
-      'Most conversion losses do not come from bad luck. They come from rushing, trusting the wrong person, or accepting the first rate you see.',
+    subtitle: 'Rushing, bad rates, and the wrong person on the other side.',
     items: [
       {
         id: 'compare',
-        label: 'Know what you will actually receive',
+        label: 'Know your final amount',
         description:
           'Compare the final amount after every fee and rate, not just the headline number.',
         icon: 'fees',
       },
       {
         id: 'verify',
-        label: 'Verify who you are dealing with',
+        label: 'Verify who you deal with',
         description:
           'Only move money when you trust the person or service on the other side.',
         icon: 'shield',
       },
       {
         id: 'pressure',
-        label: 'Stop urgency from deciding for you',
+        label: 'Do not decide under pressure',
         description:
           'Pressure is one of the biggest reasons people accept bad deals and costly mistakes.',
         icon: 'alert',
       },
       {
         id: 'checklist',
-        label: 'Walk in with a clear checklist',
+        label: 'Use a clear checklist',
         description:
           'Follow the same steps before every conversion, so nothing important gets skipped.',
         icon: 'check',
@@ -63,25 +62,22 @@ export const landingConfig = {
   },
   steps: {
     title: 'How it works',
-    subtitle: 'One minute now. More confidence on your next conversion.',
+    subtitle: 'One minute. Then use the checklist on your next conversion.',
     items: [
       {
         step: 1,
-        title: 'Answer a few quick questions',
-        description:
-          'Tell us how you usually move between cash and crypto. It takes about a minute.',
+        title: 'Quick questions',
+        description: 'About one minute.',
       },
       {
         step: 2,
-        title: 'Download your free guide',
-        description:
-          'Get the checklist instantly. No email gate, no waiting.',
+        title: 'Download the guide',
+        description: 'Instant access.',
       },
       {
         step: 3,
-        title: 'Use it before your next conversion',
-        description:
-          'Run through the checks before you send cash, confirm a rate, or release crypto.',
+        title: 'Check before you convert',
+        description: 'Use it every time.',
       },
     ],
   },
