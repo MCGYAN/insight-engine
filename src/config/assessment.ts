@@ -112,7 +112,6 @@ const Q10_FRICTION_OPTIONS = [
 
 const INERTIA_OPTIONS = [
   { id: 'yes', label: 'Yes' },
-  { id: 'not_sure', label: 'Not sure' },
   { id: 'no', label: 'No' },
 ]
 
