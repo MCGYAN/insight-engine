@@ -1,15 +1,12 @@
 /** Per-field input limits (characters). Enforced client-side and server-side. */
 export const INPUT_MAX_LENGTH: Record<string, number> = {
-  q1_other: 200,
-  q2: 500,
-  q3_other: 200,
-  q4: 500,
-  q5: 2000,
-  q6: 2000,
-  q8_currency_other: 50,
-  q8_amount: 30,
-  q9_other: 200,
-  q10: 20,
+  q2a_other: 200,
+  q5_other: 200,
+  q6: 500,
+  q7_other: 200,
+  q8: 2000,
+  q10_phone: 20,
+  q10_email: 120,
 }
 
 export function sanitizeUserInput(value: string, fieldId?: string): string {

@@ -1,7 +1,7 @@
 'use client'
 
 import { lazy, Suspense, useCallback, useState } from 'react'
-import { resolveBranchId } from '@/config/branchWording'
+import { resolveSurveyBranch } from '@/config/assessment'
 import { landingConfig } from '@/config/landing'
 import { surveyConfig } from '@/config/survey'
 import { useSurveyFlow } from '@/hooks/useSurveyFlow'
@@ -47,7 +47,7 @@ export function SurveyEngine({ onExit }: SurveyEngineProps) {
 
     const submission: SurveySubmission = {
       surveyId: surveyConfig.id,
-      branchId: resolveBranchId(answers.q1 as string | undefined),
+      branchId: resolveSurveyBranch(answers.q1 as string | undefined),
       answers,
       metadata: {
         submittedAt: new Date().toISOString(),
@@ -141,7 +141,7 @@ export function SurveyEngine({ onExit }: SurveyEngineProps) {
           </svg>
         </button>
         <span className="text-sm font-semibold text-primary">
-          {landingConfig.brand}
+          {landingConfig.guide.shortTitle}
         </span>
         <div className="w-10" aria-hidden="true" />
       </header>

@@ -4,6 +4,7 @@ export type QuestionType =
   | 'text'
   | 'number'
   | 'currency_amount'
+  | 'contact'
 
 export type ForceType =
   | 'push'

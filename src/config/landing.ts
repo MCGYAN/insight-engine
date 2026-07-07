@@ -130,7 +130,7 @@ export const landingConfig = {
   },
   assessment: {
     continue: 'Continue',
-    finish: 'Finish Assessment',
+    finish: 'Unlock My Guide',
     submitting: 'Saving your responses…',
   },
   success: {

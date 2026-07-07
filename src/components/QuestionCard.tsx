@@ -1,6 +1,5 @@
 'use client'
 
-import { CURRENCY_OPTIONS } from '@/config/assessment'
 import { INPUT_MAX_LENGTH } from '@/utils/inputSanitizer'
 import type { Question } from '@/types/Question'
 
@@ -21,89 +20,81 @@ export function QuestionCard({
   const value = answers[question.id]
   const maxLength = INPUT_MAX_LENGTH[question.id]
 
-  if (question.type === 'currency_amount') {
-    const currency = (answers['q8_currency'] as string) ?? ''
-    const currencyOther = (answers['q8_currency_other'] as string) ?? ''
-    const amount = (answers['q8_amount'] as string) ?? ''
+  if (question.type === 'contact') {
+    const contact = answers.q10_contact
+    const showContactFields = contact === 'yes'
 
     return (
       <div className="space-y-6">
-        <div>
-          <p className="mb-3 text-sm font-medium text-muted">Currency</p>
-          <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
-            {CURRENCY_OPTIONS.map((opt) => {
-              const selected = currency === opt.id
-              return (
-                <button
-                  key={opt.id}
-                  type="button"
-                  onClick={() => onChange('q8_currency', opt.id)}
-                  className={`rounded-2xl border-2 px-3 py-4 text-center text-base font-semibold transition-all duration-200 active:scale-[0.98] ${
-                    selected
-                      ? 'border-primary bg-primary text-white shadow-md shadow-primary/20'
-                      : 'border-border bg-surface text-text hover:border-primary/30'
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              )
-            })}
-          </div>
+        <div className="space-y-2.5" role="radiogroup" aria-label={question.label}>
+          {question.options?.map((option) => (
+            <OptionButton
+              key={option.id}
+              label={option.label}
+              selected={contact === option.id}
+              onClick={() => onChange('q10_contact', option.id)}
+            />
+          ))}
         </div>
 
-        {currency === 'other' && (
-          <div className="animate-fade-in">
-            <p className="mb-3 text-sm font-medium text-muted">
-              Which currency?
-            </p>
-            <input
-              type="text"
-              value={currencyOther}
-              onChange={(e) => onChange('q8_currency_other', e.target.value)}
-              placeholder="e.g. ETH, SOL…"
-              maxLength={INPUT_MAX_LENGTH.q8_currency_other}
-              className={inputBase}
-            />
+        {showContactFields && (
+          <div className="animate-fade-in space-y-4">
+            <div>
+              <p className="mb-2 text-sm font-medium text-muted">
+                Phone Number (Optional)
+              </p>
+              <input
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                value={(answers.q10_phone as string) ?? ''}
+                onChange={(e) => onChange('q10_phone', e.target.value)}
+                placeholder="e.g. +233 XX XXX XXXX"
+                maxLength={INPUT_MAX_LENGTH.q10_phone}
+                className={inputBase}
+              />
+            </div>
+            <div>
+              <p className="mb-2 text-sm font-medium text-muted">
+                Email Address (Optional)
+              </p>
+              <input
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                value={(answers.q10_email as string) ?? ''}
+                onChange={(e) => onChange('q10_email', e.target.value)}
+                placeholder="e.g. you@email.com"
+                maxLength={INPUT_MAX_LENGTH.q10_email}
+                className={inputBase}
+              />
+            </div>
           </div>
         )}
 
         <div>
-          <p className="mb-3 text-sm font-medium text-muted">Amount</p>
-          <input
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            value={amount}
-            onChange={(e) => {
-              const val = e.target.value.replace(/[^\d.]/g, '')
-              onChange('q8_amount', val)
-            }}
-            placeholder="e.g. 500"
-            maxLength={INPUT_MAX_LENGTH.q8_amount}
-            className={inputBase}
-          />
+          <p className="mb-3 text-base font-medium text-text">
+            Would you like to receive future practical guides and research
+            insights through our WhatsApp community?
+          </p>
+          <div className="space-y-2.5" role="radiogroup" aria-label="WhatsApp community">
+            <OptionButton
+              label="Yes"
+              selected={answers.q10_whatsapp === 'yes'}
+              onClick={() => onChange('q10_whatsapp', 'yes')}
+            />
+            <OptionButton
+              label="No"
+              selected={answers.q10_whatsapp === 'no'}
+              onClick={() => onChange('q10_whatsapp', 'no')}
+            />
+          </div>
         </div>
       </div>
     )
   }
 
   if (question.type === 'text') {
-    if (question.inputMode === 'tel') {
-      return (
-        <input
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel"
-          value={(value as string) ?? ''}
-          onChange={(e) => onChange(question.id, e.target.value)}
-          placeholder={question.placeholder}
-          maxLength={INPUT_MAX_LENGTH.q10}
-          className={inputBase}
-          aria-label={question.label}
-        />
-      )
-    }
-
     if (question.variant === 'paragraph') {
       return (
         <textarea

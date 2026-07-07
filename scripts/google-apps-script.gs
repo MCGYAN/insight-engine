@@ -10,30 +10,38 @@
 
 var ALLOWED_FIELD_KEYS = [
   'branchId',
-  'trigger',
-  'currentSolution',
-  'reasonForChoice',
-  'biggestFriction',
-  'desiredImprovement',
+  'recentActivity',
+  'nonConverterProfile',
+  'lastConversionDirection',
+  'transactionValue',
   'frequency',
-  'currency',
-  'transactionAmount',
-  'customerSegment',
-  'whatsappNumber',
+  'currentSolution',
+  'pullFactors',
+  'friction',
+  'desiredImprovement',
+  'inertia',
+  'contactConsent',
+  'phoneNumber',
+  'email',
+  'whatsappCommunity',
 ];
 
 var FIELD_MAX_LENGTH = {
-  branchId: 220,
-  trigger: 500,
-  currentSolution: 200,
-  reasonForChoice: 500,
-  biggestFriction: 2000,
-  desiredImprovement: 2000,
+  branchId: 50,
+  recentActivity: 50,
+  nonConverterProfile: 200,
+  lastConversionDirection: 50,
+  transactionValue: 50,
   frequency: 50,
-  currency: 50,
-  transactionAmount: 30,
-  customerSegment: 200,
-  whatsappNumber: 20,
+  currentSolution: 200,
+  pullFactors: 500,
+  friction: 200,
+  desiredImprovement: 2000,
+  inertia: 50,
+  contactConsent: 10,
+  phoneNumber: 20,
+  email: 120,
+  whatsappCommunity: 10,
 };
 
 var MAX_USER_AGENT_LENGTH = 500;
@@ -156,5 +164,5 @@ function jsonResponse(obj) {
 }
 
 function doGet() {
-  return jsonResponse({ success: true, message: 'AfriMoney assessment endpoint is active.' });
+  return jsonResponse({ success: true, message: 'Discovery survey endpoint is active.' });
 }

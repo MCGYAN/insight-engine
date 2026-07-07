@@ -1,5 +1,5 @@
 import { buildQuestionIdToCanonicalMap } from '@/config/fieldMapping'
-import { resolveBranchId } from '@/config/branchWording'
+import { resolveSurveyBranch } from '@/config/assessment'
 import { sanitizeSheetValue } from '@/services/submissionValidator'
 import type { SurveyAnswers, SurveySubmission } from '@/types/Survey'
 
@@ -20,6 +20,16 @@ function formatAnswerValue(value: string | string[] | undefined): string {
   return sanitizeSheetValue(String(value))
 }
 
+function resolveOptionWithOther(
+  answer: string | string[] | undefined,
+  otherAnswer: string | string[] | undefined,
+): string {
+  if (answer === 'other' && otherAnswer) {
+    return formatAnswerValue(otherAnswer)
+  }
+  return formatAnswerValue(answer)
+}
+
 let canonicalMapCache: Map<string, string> | null = null
 
 function getCanonicalMap(): Map<string, string> {
@@ -29,48 +39,33 @@ function getCanonicalMap(): Map<string, string> {
   return canonicalMapCache
 }
 
-/**
- * Maps answers to the canonical sheet schema.
- * When "Other" is selected, the free-text value replaces the option id.
- */
 export function mapAnswersToCanonicalFields(
   answers: SurveyAnswers,
 ): Record<string, string> {
   const canonicalMap = getCanonicalMap()
   const fields: Record<string, string> = {}
 
+  const branchId = resolveSurveyBranch(answers.q1 as string | undefined)
+  fields.branchId = branchId
+
   const resolved: Record<string, string> = {
     q1: formatAnswerValue(answers.q1),
-    q2: formatAnswerValue(answers.q2),
-    q3:
-      answers.q3 === 'other'
-        ? formatAnswerValue(answers.q3_other)
-        : formatAnswerValue(answers.q3),
+    q2a: resolveOptionWithOther(answers.q2a, answers.q2a_other),
+    q2b: formatAnswerValue(answers.q2b),
+    q3: formatAnswerValue(answers.q3),
     q4: formatAnswerValue(answers.q4),
-    q5: formatAnswerValue(answers.q5),
+    q5: resolveOptionWithOther(answers.q5, answers.q5_other),
     q6: formatAnswerValue(answers.q6),
-    q7: formatAnswerValue(answers.q7),
-    q8_currency:
-      answers.q8_currency === 'other'
-        ? formatAnswerValue(answers.q8_currency_other)
-        : formatAnswerValue(answers.q8_currency),
-    q8_amount: formatAnswerValue(answers.q8_amount),
-    q9:
-      answers.q9 === 'other'
-        ? formatAnswerValue(answers.q9_other)
-        : formatAnswerValue(answers.q9),
-    q10: formatAnswerValue(answers.q10),
+    q7: resolveOptionWithOther(answers.q7, answers.q7_other),
+    q8: formatAnswerValue(answers.q8),
+    q9: formatAnswerValue(answers.q9),
+    q10_contact: formatAnswerValue(answers.q10_contact),
+    q10_phone: formatAnswerValue(answers.q10_phone),
+    q10_email: formatAnswerValue(answers.q10_email),
+    q10_whatsapp: formatAnswerValue(answers.q10_whatsapp),
   }
 
-  // branchId: use q1 selection; if other, append detail
-  const branchId = resolveBranchId(answers.q1 as string | undefined)
-  fields.branchId =
-    branchId === 'other' && answers.q1_other
-      ? `other: ${formatAnswerValue(answers.q1_other)}`
-      : branchId
-
   for (const [questionId, value] of Object.entries(resolved)) {
-    if (questionId === 'q1') continue
     const fieldName = canonicalMap.get(questionId)
     if (fieldName && value) {
       fields[fieldName] = value
@@ -83,11 +78,11 @@ export function mapAnswersToCanonicalFields(
 export function buildSheetsPayload(
   submission: SurveySubmission,
 ): SheetsPayload {
-  const branchId = resolveBranchId(submission.answers.q1 as string | undefined)
+  const branchId = resolveSurveyBranch(submission.answers.q1 as string | undefined)
 
   return {
     surveyId: submission.surveyId,
-    branchId,
+    branchId: branchId === 'unknown' ? null : branchId,
     submittedAt: submission.metadata.submittedAt,
     durationMs: submission.metadata.durationMs,
     userAgent: submission.metadata.userAgent,

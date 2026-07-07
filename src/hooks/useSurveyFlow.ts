@@ -1,8 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import {
-  ASSESSMENT_QUESTION_COUNT,
-  buildAssessmentFlow,
-} from '@/config/fieldMapping'
+import { buildAssessmentFlow } from '@/config/fieldMapping'
 import { clearProgress, loadProgress, saveProgress } from '@/services/storage'
 import { sanitizeUserInput, sanitizeUserInputArray } from '@/utils/inputSanitizer'
 import type { Question } from '@/types/Question'
@@ -11,6 +8,25 @@ import type {
   SurveyAnswers,
   SurveyPhase,
 } from '@/types/Survey'
+
+const DOWNSTREAM_KEYS = [
+  'q2a',
+  'q2a_other',
+  'q2b',
+  'q3',
+  'q4',
+  'q5',
+  'q5_other',
+  'q6',
+  'q7',
+  'q7_other',
+  'q8',
+  'q9',
+  'q10_contact',
+  'q10_phone',
+  'q10_email',
+  'q10_whatsapp',
+] as const
 
 function isInlineOtherValid(
   question: Question,
@@ -21,6 +37,37 @@ function isInlineOtherValid(
   if (selected !== 'other') return true
   const otherVal = answers[question.inlineOther.fieldId]
   return typeof otherVal === 'string' && otherVal.trim().length > 0
+}
+
+function isContactValid(answers: SurveyAnswers): boolean {
+  const consent = answers.q10_contact
+  const whatsapp = answers.q10_whatsapp
+  if (consent !== 'yes' && consent !== 'no') return false
+  if (whatsapp !== 'yes' && whatsapp !== 'no') return false
+
+  const phone = answers.q10_phone
+  if (typeof phone === 'string' && phone.trim() && !/^\+?[\d\s\-()]{7,20}$/.test(phone.trim())) {
+    return false
+  }
+
+  const email = answers.q10_email
+  if (
+    typeof email === 'string' &&
+    email.trim() &&
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+  ) {
+    return false
+  }
+
+  return true
+}
+
+function clearDownstreamAnswers(next: SurveyAnswers, fromQuestionId: string) {
+  if (fromQuestionId !== 'q1') return
+
+  for (const key of DOWNSTREAM_KEYS) {
+    delete next[key]
+  }
 }
 
 export function useSurveyFlow() {
@@ -44,13 +91,19 @@ export function useSurveyFlow() {
 
   const questionFlow = useMemo(() => buildAssessmentFlow(answers), [answers])
 
+  useEffect(() => {
+    if (currentIndex >= questionFlow.length) {
+      setCurrentIndex(Math.max(0, questionFlow.length - 1))
+    }
+  }, [currentIndex, questionFlow.length])
+
   const activeQuestion: ActiveQuestion | null = useMemo(() => {
     if (phase !== 'survey' || currentIndex >= questionFlow.length) return null
     const question = questionFlow[currentIndex]
     return {
       question,
       index: currentIndex + 1,
-      total: ASSESSMENT_QUESTION_COUNT,
+      total: questionFlow.length,
       section: question.section,
     }
   }, [phase, currentIndex, questionFlow])
@@ -72,16 +125,8 @@ export function useSurveyFlow() {
     (question: Question): boolean => {
       if (!question.required) return true
 
-      if (question.type === 'currency_amount') {
-        const currency = answers['q8_currency']
-        const amount = answers['q8_amount']
-        if (!currency || typeof currency !== 'string') return false
-        if (currency === 'other') {
-          const other = answers['q8_currency_other']
-          if (typeof other !== 'string' || !other.trim()) return false
-        }
-        if (typeof amount !== 'string' || !amount.trim()) return false
-        return /^\d+(\.\d+)?$/.test(amount.trim())
+      if (question.type === 'contact') {
+        return isContactValid(answers)
       }
 
       const answer = answers[question.id]
@@ -112,12 +157,14 @@ export function useSurveyFlow() {
       setAnswers((prev) => {
         const next = { ...prev, [questionId]: sanitized }
 
-        if (questionId === 'q1' && value !== 'other') delete next.q1_other
-        if (questionId === 'q3' && value !== 'other') delete next.q3_other
-        if (questionId === 'q8_currency' && value !== 'other') {
-          delete next.q8_currency_other
+        if (questionId === 'q1') clearDownstreamAnswers(next, 'q1')
+        if (questionId === 'q2a' && value !== 'other') delete next.q2a_other
+        if (questionId === 'q5' && value !== 'other') delete next.q5_other
+        if (questionId === 'q7' && value !== 'other') delete next.q7_other
+        if (questionId === 'q10_contact' && value === 'no') {
+          delete next.q10_phone
+          delete next.q10_email
         }
-        if (questionId === 'q9' && value !== 'other') delete next.q9_other
 
         persist(next, currentIndex)
         return next
@@ -129,10 +176,10 @@ export function useSurveyFlow() {
   const goNext = useCallback(() => {
     if (!activeQuestion || !canGoNext) return
     const nextIndex = currentIndex + 1
-    if (nextIndex >= ASSESSMENT_QUESTION_COUNT) return
+    if (nextIndex >= questionFlow.length) return
     setCurrentIndex(nextIndex)
     persist(answers, nextIndex)
-  }, [activeQuestion, canGoNext, currentIndex, answers, persist])
+  }, [activeQuestion, canGoNext, currentIndex, answers, persist, questionFlow.length])
 
   const goBack = useCallback(() => {
     if (currentIndex <= 0) return
@@ -141,7 +188,7 @@ export function useSurveyFlow() {
     persist(answers, nextIndex)
   }, [currentIndex, answers, persist])
 
-  const isLastQuestion = currentIndex === ASSESSMENT_QUESTION_COUNT - 1
+  const isLastQuestion = currentIndex === questionFlow.length - 1
 
   const finishSurvey = useCallback(() => {
     clearProgress()

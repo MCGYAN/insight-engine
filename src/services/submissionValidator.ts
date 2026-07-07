@@ -1,35 +1,45 @@
-import { BRANCH_WORDING } from '@/config/branchWording'
+import type { SurveyBranchId } from '@/config/assessment'
 import { CANONICAL_FIELDS } from '@/config/fieldMapping'
 import { surveyConfig } from '@/config/survey'
 import type { SheetsPayload } from './submissionFormatter'
 
 const ALLOWED_FIELD_KEYS = new Set<string>(Object.values(CANONICAL_FIELDS))
 
-const ALLOWED_BRANCH_IDS = new Set<string>(Object.keys(BRANCH_WORDING))
+const ALLOWED_BRANCH_IDS = new Set<SurveyBranchId>([
+  'non_converter',
+  'cash_to_crypto',
+  'crypto_to_cash',
+  'both',
+])
 
 const FIELD_MAX_LENGTH: Record<string, number> = {
-  [CANONICAL_FIELDS.trigger]: 500,
-  [CANONICAL_FIELDS.currentSolution]: 200,
-  [CANONICAL_FIELDS.reasonForChoice]: 500,
-  [CANONICAL_FIELDS.biggestFriction]: 2000,
-  [CANONICAL_FIELDS.desiredImprovement]: 2000,
+  [CANONICAL_FIELDS.recentActivity]: 50,
+  [CANONICAL_FIELDS.nonConverterProfile]: 200,
+  [CANONICAL_FIELDS.lastConversionDirection]: 50,
+  [CANONICAL_FIELDS.transactionValue]: 50,
   [CANONICAL_FIELDS.frequency]: 50,
-  [CANONICAL_FIELDS.currency]: 50,
-  [CANONICAL_FIELDS.transactionAmount]: 30,
-  [CANONICAL_FIELDS.customerSegment]: 200,
-  [CANONICAL_FIELDS.whatsappNumber]: 20,
+  [CANONICAL_FIELDS.currentSolution]: 200,
+  [CANONICAL_FIELDS.pullFactors]: 500,
+  [CANONICAL_FIELDS.friction]: 200,
+  [CANONICAL_FIELDS.desiredImprovement]: 2000,
+  [CANONICAL_FIELDS.inertia]: 50,
+  [CANONICAL_FIELDS.contactConsent]: 10,
+  [CANONICAL_FIELDS.phoneNumber]: 20,
+  [CANONICAL_FIELDS.email]: 120,
+  [CANONICAL_FIELDS.whatsappCommunity]: 10,
+  branchId: 50,
 }
 
 const MAX_USER_AGENT_LENGTH = 500
 const MAX_SURVEY_ID_LENGTH = 100
-const MAX_DURATION_MS = 86_400_000 // 24 hours
-const WHATSAPP_PATTERN = /^\+?[\d\s\-()]{7,20}$/
+const MAX_DURATION_MS = 86_400_000
+const PHONE_PATTERN = /^\+?[\d\s\-()]{7,20}$/
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export type ValidationResult =
   | { ok: true; payload: SheetsPayload }
   | { ok: false; error: string }
 
-/** Strip control chars and block Google Sheets formula injection. */
 export function sanitizeSheetValue(value: string): string {
   let clean = value
     .replace(/\0/g, '')
@@ -56,16 +66,7 @@ function asTrimmedString(value: unknown, maxLength: number): string | null {
 }
 
 function isValidIsoDate(value: string): boolean {
-  const time = Date.parse(value)
-  return Number.isFinite(time)
-}
-
-function isValidBranchId(value: string): boolean {
-  if (ALLOWED_BRANCH_IDS.has(value)) return true
-  if (value.startsWith('other: ')) {
-    return value.length <= 220
-  }
-  return false
+  return Number.isFinite(Date.parse(value))
 }
 
 export function validateSubmissionPayload(body: unknown): ValidationResult {
@@ -80,8 +81,8 @@ export function validateSubmissionPayload(body: unknown): ValidationResult {
 
   const branchIdRaw = body.branchId
   if (branchIdRaw !== null && branchIdRaw !== undefined) {
-    const branchId = asTrimmedString(branchIdRaw, 220)
-    if (!branchId || !isValidBranchId(branchId)) {
+    const branchId = asTrimmedString(branchIdRaw, 50)
+    if (!branchId || !ALLOWED_BRANCH_IDS.has(branchId as SurveyBranchId)) {
       return { ok: false, error: 'Invalid branch identifier.' }
     }
   }
@@ -129,12 +130,20 @@ export function validateSubmissionPayload(body: unknown): ValidationResult {
       return { ok: false, error: `Value for ${key} is invalid or too long.` }
     }
 
-    if (key === CANONICAL_FIELDS.whatsappNumber && !WHATSAPP_PATTERN.test(sanitized)) {
-      return { ok: false, error: 'Invalid WhatsApp number format.' }
+    if (
+      key === CANONICAL_FIELDS.phoneNumber &&
+      sanitized &&
+      !PHONE_PATTERN.test(sanitized)
+    ) {
+      return { ok: false, error: 'Invalid phone number format.' }
     }
 
-    if (key === CANONICAL_FIELDS.transactionAmount && !/^[\d.]+$/.test(sanitized)) {
-      return { ok: false, error: 'Invalid transaction amount.' }
+    if (
+      key === CANONICAL_FIELDS.email &&
+      sanitized &&
+      !EMAIL_PATTERN.test(sanitized)
+    ) {
+      return { ok: false, error: 'Invalid email format.' }
     }
 
     if (sanitized.length > 0) {
@@ -145,7 +154,7 @@ export function validateSubmissionPayload(body: unknown): ValidationResult {
   const branchId =
     body.branchId === null || body.branchId === undefined
       ? null
-      : asTrimmedString(body.branchId, 220)!
+      : asTrimmedString(body.branchId, 50)!
 
   return {
     ok: true,

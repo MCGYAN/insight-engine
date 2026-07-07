@@ -1,48 +1,46 @@
 import type { Question } from '@/types/Question'
-import {
-  ASSESSMENT_QUESTION_COUNT,
-  getAssessmentQuestions,
-} from './assessment'
+import { getSurveyQuestions, MAX_SURVEY_QUESTIONS } from './assessment'
 
 /**
- * Canonical Google Sheets fields — one clean schema for all branches.
- * branchId identifies which journey the respondent followed.
+ * Canonical Google Sheets fields for Customer Discovery Survey V1.
  */
 export const CANONICAL_FIELDS = {
   branchId: 'branchId',
-  trigger: 'trigger',
-  currentSolution: 'currentSolution',
-  reasonForChoice: 'reasonForChoice',
-  biggestFriction: 'biggestFriction',
-  desiredImprovement: 'desiredImprovement',
+  recentActivity: 'recentActivity',
+  nonConverterProfile: 'nonConverterProfile',
+  lastConversionDirection: 'lastConversionDirection',
+  transactionValue: 'transactionValue',
   frequency: 'frequency',
-  currency: 'currency',
-  transactionAmount: 'transactionAmount',
-  customerSegment: 'customerSegment',
-  whatsappNumber: 'whatsappNumber',
+  currentSolution: 'currentSolution',
+  pullFactors: 'pullFactors',
+  friction: 'friction',
+  desiredImprovement: 'desiredImprovement',
+  inertia: 'inertia',
+  contactConsent: 'contactConsent',
+  phoneNumber: 'phoneNumber',
+  email: 'email',
+  whatsappCommunity: 'whatsappCommunity',
 } as const
 
-/** Maps raw answer keys → canonical sheet columns */
 const FIELD_MAP: Record<string, string> = {
-  q1: CANONICAL_FIELDS.branchId,
-  q2: CANONICAL_FIELDS.trigger,
-  q3: CANONICAL_FIELDS.currentSolution,
-  q4: CANONICAL_FIELDS.reasonForChoice,
-  q5: CANONICAL_FIELDS.biggestFriction,
-  q6: CANONICAL_FIELDS.desiredImprovement,
-  q7: CANONICAL_FIELDS.frequency,
-  q8_currency: CANONICAL_FIELDS.currency,
-  q8_amount: CANONICAL_FIELDS.transactionAmount,
-  q9: CANONICAL_FIELDS.customerSegment,
-  q10: CANONICAL_FIELDS.whatsappNumber,
+  q1: CANONICAL_FIELDS.recentActivity,
+  q2a: CANONICAL_FIELDS.nonConverterProfile,
+  q2b: CANONICAL_FIELDS.lastConversionDirection,
+  q3: CANONICAL_FIELDS.transactionValue,
+  q4: CANONICAL_FIELDS.frequency,
+  q5: CANONICAL_FIELDS.currentSolution,
+  q6: CANONICAL_FIELDS.pullFactors,
+  q7: CANONICAL_FIELDS.friction,
+  q8: CANONICAL_FIELDS.desiredImprovement,
+  q9: CANONICAL_FIELDS.inertia,
+  q10_contact: CANONICAL_FIELDS.contactConsent,
+  q10_phone: CANONICAL_FIELDS.phoneNumber,
+  q10_email: CANONICAL_FIELDS.email,
+  q10_whatsapp: CANONICAL_FIELDS.whatsappCommunity,
 }
 
 export function buildQuestionIdToCanonicalMap(): Map<string, string> {
-  const map = new Map<string, string>()
-  for (const [key, value] of Object.entries(FIELD_MAP)) {
-    map.set(key, value)
-  }
-  return map
+  return new Map(Object.entries(FIELD_MAP))
 }
 
 export const SHEET_COLUMN_ORDER: string[] = [
@@ -50,23 +48,27 @@ export const SHEET_COLUMN_ORDER: string[] = [
   'surveyId',
   'durationMs',
   CANONICAL_FIELDS.branchId,
-  CANONICAL_FIELDS.trigger,
-  CANONICAL_FIELDS.currentSolution,
-  CANONICAL_FIELDS.reasonForChoice,
-  CANONICAL_FIELDS.biggestFriction,
-  CANONICAL_FIELDS.desiredImprovement,
+  CANONICAL_FIELDS.recentActivity,
+  CANONICAL_FIELDS.nonConverterProfile,
+  CANONICAL_FIELDS.lastConversionDirection,
+  CANONICAL_FIELDS.transactionValue,
   CANONICAL_FIELDS.frequency,
-  CANONICAL_FIELDS.currency,
-  CANONICAL_FIELDS.transactionAmount,
-  CANONICAL_FIELDS.customerSegment,
-  CANONICAL_FIELDS.whatsappNumber,
+  CANONICAL_FIELDS.currentSolution,
+  CANONICAL_FIELDS.pullFactors,
+  CANONICAL_FIELDS.friction,
+  CANONICAL_FIELDS.desiredImprovement,
+  CANONICAL_FIELDS.inertia,
+  CANONICAL_FIELDS.contactConsent,
+  CANONICAL_FIELDS.phoneNumber,
+  CANONICAL_FIELDS.email,
+  CANONICAL_FIELDS.whatsappCommunity,
   'userAgent',
 ]
 
 export function buildAssessmentFlow(
   answers: Record<string, string | string[]>,
 ): Question[] {
-  return getAssessmentQuestions(answers)
+  return getSurveyQuestions(answers)
 }
 
-export { ASSESSMENT_QUESTION_COUNT }
+export { MAX_SURVEY_QUESTIONS as ASSESSMENT_QUESTION_COUNT }
