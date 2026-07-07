@@ -1,6 +1,5 @@
 import { landingConfig } from '@/config/landing'
 import { AboutSection } from './AboutSection'
-import { ElaboratorSection } from './ElaboratorSection'
 import { FinalCTA } from './FinalCTA'
 import { Hero } from './Hero'
 import { CTAButton } from './CTAButton'
@@ -29,7 +28,6 @@ export function LandingPage({ onStart }: LandingPageProps) {
       <main>
         <Container>
           <Hero onStart={onStart} />
-          <ElaboratorSection />
           <AboutSection />
           <FinalCTA onStart={onStart} />
         </Container>
