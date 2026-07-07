@@ -1,10 +1,14 @@
 import type { SurveyBranchId } from '@/config/assessment'
 import { CANONICAL_FIELDS } from '@/config/fieldMapping'
 import { surveyConfig } from '@/config/survey'
+import { UTM_PARAM_KEYS } from '@/services/utm'
 import { isValidPhoneNumber } from '@/utils/phoneValidation'
 import type { SheetsPayload } from './submissionFormatter'
 
-const ALLOWED_FIELD_KEYS = new Set<string>(Object.values(CANONICAL_FIELDS))
+const ALLOWED_FIELD_KEYS = new Set<string>([
+  ...Object.values(CANONICAL_FIELDS),
+  ...UTM_PARAM_KEYS,
+])
 
 const ALLOWED_BRANCH_IDS = new Set<SurveyBranchId>([
   'non_converter',
@@ -30,6 +34,10 @@ const FIELD_MAX_LENGTH: Record<string, number> = {
   [CANONICAL_FIELDS.email]: 120,
   [CANONICAL_FIELDS.whatsappCommunity]: 10,
   branchId: 50,
+  utm_source: 120,
+  utm_medium: 120,
+  utm_campaign: 120,
+  utm_content: 120,
 }
 
 const MAX_USER_AGENT_LENGTH = 500
@@ -121,6 +129,15 @@ export function validateSubmissionPayload(body: unknown): ValidationResult {
       return { ok: false, error: `Unexpected field: ${key}` }
     }
 
+    if (UTM_PARAM_KEYS.includes(key as (typeof UTM_PARAM_KEYS)[number])) {
+      const utmValue =
+        value === undefined || value === null
+          ? ''
+          : asTrimmedString(value, FIELD_MAX_LENGTH[key] ?? 120)
+      fields[key] = utmValue ?? ''
+      continue
+    }
+
     if (typeof value !== 'string' && typeof value !== 'number') {
       return { ok: false, error: `Invalid value for ${key}.` }
     }
@@ -151,6 +168,12 @@ export function validateSubmissionPayload(body: unknown): ValidationResult {
 
     if (sanitized.length > 0) {
       fields[key] = sanitized
+    }
+  }
+
+  for (const key of UTM_PARAM_KEYS) {
+    if (!(key in fields)) {
+      fields[key] = ''
     }
   }
 

@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useState } from 'react'
 import { LandingPage } from '@/components/LandingPage'
 import { clearProgress, loadProgress } from '@/services/storage'
+import { captureUtmFromUrl } from '@/services/utm'
 
 const SurveyEngine = dynamic(
   () => import('@/components/SurveyEngine').then((m) => ({ default: m.SurveyEngine })),
@@ -23,6 +24,7 @@ export function HomePage() {
   const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
+    captureUtmFromUrl()
     if (loadProgress()) setView('survey')
     setHydrated(true)
   }, [])

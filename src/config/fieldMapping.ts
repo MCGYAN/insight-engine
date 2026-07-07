@@ -68,6 +68,10 @@ export const SHEET_COLUMN_ORDER: string[] = [
   CANONICAL_FIELDS.phoneNumber,
   CANONICAL_FIELDS.email,
   CANONICAL_FIELDS.whatsappCommunity,
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_content',
   'userAgent',
 ]
 

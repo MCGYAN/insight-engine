@@ -25,6 +25,10 @@ var ALLOWED_FIELD_KEYS = [
   'phoneNumber',
   'email',
   'whatsappCommunity',
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_content',
 ];
 
 var FIELD_MAX_LENGTH = {
@@ -44,11 +48,17 @@ var FIELD_MAX_LENGTH = {
   phoneNumber: 20,
   email: 120,
   whatsappCommunity: 10,
+  utm_source: 120,
+  utm_medium: 120,
+  utm_campaign: 120,
+  utm_content: 120,
 };
 
 var MAX_USER_AGENT_LENGTH = 500;
 var MAX_SURVEY_ID_LENGTH = 100;
 var MAX_DURATION_MS = 86400000;
+
+var UTM_FIELD_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
 
 function doPost(e) {
   try {
@@ -93,7 +103,7 @@ function doPost(e) {
 
         var maxLen = FIELD_MAX_LENGTH[key] || 500;
         var value = sanitizeString(String(payload.fields[key]), maxLen);
-        if (value) {
+        if (value || UTM_FIELD_KEYS.indexOf(key) !== -1) {
           rowData[key] = value;
         }
       }

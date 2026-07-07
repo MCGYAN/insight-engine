@@ -1,6 +1,7 @@
 import { buildQuestionIdToCanonicalMap } from '@/config/fieldMapping'
 import { resolveSurveyBranch } from '@/config/assessment'
 import { sanitizeSheetValue } from '@/services/submissionValidator'
+import { UTM_PARAM_KEYS, type UtmParams } from '@/services/utm'
 import type { SurveyAnswers, SurveySubmission } from '@/types/Survey'
 
 export interface SheetsPayload {
@@ -90,10 +91,21 @@ export function mapAnswersToCanonicalFields(
   return fields
 }
 
+function appendUtmFields(
+  fields: Record<string, string>,
+  utm: UtmParams,
+): void {
+  for (const key of UTM_PARAM_KEYS) {
+    fields[key] = sanitizeSheetValue(utm[key] ?? '')
+  }
+}
+
 export function buildSheetsPayload(
   submission: SurveySubmission,
 ): SheetsPayload {
   const branchId = resolveSurveyBranch(submission.answers.q1 as string | undefined)
+  const fields = mapAnswersToCanonicalFields(submission.answers)
+  appendUtmFields(fields, submission.utm)
 
   return {
     surveyId: submission.surveyId,
@@ -101,6 +113,6 @@ export function buildSheetsPayload(
     submittedAt: submission.metadata.submittedAt,
     durationMs: submission.metadata.durationMs,
     userAgent: submission.metadata.userAgent,
-    fields: mapAnswersToCanonicalFields(submission.answers),
+    fields,
   }
 }

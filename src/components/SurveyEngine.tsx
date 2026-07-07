@@ -6,6 +6,7 @@ import { landingConfig } from '@/config/landing'
 import { surveyConfig } from '@/config/survey'
 import { useSurveyFlow } from '@/hooks/useSurveyFlow'
 import { submitSurveyResponses } from '@/services/googleSheets'
+import { getStoredUtm } from '@/services/utm'
 import type { SurveySubmission } from '@/types/Survey'
 import { ProgressBar } from './ProgressBar'
 import { QuestionCard } from './QuestionCard'
@@ -49,6 +50,7 @@ export function SurveyEngine({ onExit }: SurveyEngineProps) {
       surveyId: surveyConfig.id,
       branchId: resolveSurveyBranch(answers.q1 as string | undefined),
       answers,
+      utm: getStoredUtm(),
       metadata: {
         submittedAt: new Date().toISOString(),
         userAgent: navigator.userAgent,

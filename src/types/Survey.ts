@@ -15,10 +15,13 @@ export interface SurveyAnswers {
   [questionId: string]: string | string[]
 }
 
+import type { UtmParams } from '@/services/utm'
+
 export interface SurveySubmission {
   surveyId: string
   branchId: string | null
   answers: SurveyAnswers
+  utm: UtmParams
   metadata: {
     submittedAt: string
     userAgent: string
