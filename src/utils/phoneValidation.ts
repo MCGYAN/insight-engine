@@ -5,7 +5,8 @@
  * - XXXXXXXXX (9-digit mobile without leading zero)
  */
 export function isValidPhoneNumber(phone: string): boolean {
-  const compact = phone.trim().replace(/[\s\-()]/g, '')
+  const stripped = phone.trim().replace(/^'/, '')
+  const compact = stripped.replace(/[\s\-()]/g, '')
   if (!compact) return true
 
   if (/^\+233\d{9}$/.test(compact)) return true

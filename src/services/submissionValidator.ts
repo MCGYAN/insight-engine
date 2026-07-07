@@ -124,7 +124,7 @@ export function validateSubmissionPayload(body: unknown): ValidationResult {
       return { ok: false, error: `Invalid value for ${key}.` }
     }
 
-    const rawValue = String(value).trim()
+    const rawValue = String(value).trim().replace(/^'/, '')
 
     if (
       key === CANONICAL_FIELDS.phoneNumber &&

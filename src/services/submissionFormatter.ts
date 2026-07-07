@@ -20,6 +20,11 @@ function formatAnswerValue(value: string | string[] | undefined): string {
   return sanitizeSheetValue(String(value))
 }
 
+function formatRawValue(value: string | string[] | undefined): string {
+  if (value === undefined) return ''
+  return String(value).trim()
+}
+
 function resolveOptionWithOther(
   answer: string | string[] | undefined,
   otherAnswer: string | string[] | undefined,
@@ -60,8 +65,8 @@ export function mapAnswersToCanonicalFields(
     q8: formatAnswerValue(answers.q8),
     q9: formatAnswerValue(answers.q9),
     q10_contact: formatAnswerValue(answers.q10_contact),
-    q10_phone: formatAnswerValue(answers.q10_phone),
-    q10_email: formatAnswerValue(answers.q10_email),
+    q10_phone: formatRawValue(answers.q10_phone),
+    q10_email: formatRawValue(answers.q10_email),
     q10_whatsapp: formatAnswerValue(answers.q10_whatsapp),
   }
 
