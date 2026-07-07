@@ -11,7 +11,7 @@ interface LandingPageProps {
 }
 
 export function LandingPage({ onStart }: LandingPageProps) {
-  const { brand } = landingConfig
+  const { brand, hero } = landingConfig
 
   return (
     <>
@@ -21,7 +21,7 @@ export function LandingPage({ onStart }: LandingPageProps) {
             {brand}
           </span>
           <CTAButton onClick={onStart} size="md">
-            Get Checklist
+            {hero.cta}
           </CTAButton>
         </Container>
       </header>

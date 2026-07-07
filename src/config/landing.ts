@@ -15,7 +15,7 @@ export const landingConfig = {
     headline: 'Before your physical cash meets crypto, know what to check.',
     subheadline:
       'Crypto is full of bad rates, hidden costs, rushed decisions, and people you should not trust. Answer a few quick questions and unlock a simple checklist to help you protect your money before your next physical cash and crypto transaction.',
-    cta: 'Unlock the Free Checklist',
+    cta: 'Download Now',
     trustLine:
       'We do not ask for wallet addresses, passwords, seed phrases, or account balances.',
   },
@@ -126,7 +126,7 @@ export const landingConfig = {
     headline: 'Your next conversion deserves a better decision.',
     subheadline:
       'Complete the assessment and download the checklist before you move cash or crypto again.',
-    cta: 'Get My Free Checklist',
+    cta: 'Download Now',
   },
   assessment: {
     continue: 'Continue',
