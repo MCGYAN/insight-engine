@@ -11,13 +11,13 @@ export const landingConfig = {
     url: '/what-to-check-before-converting-cash-guide.pdf',
   },
   hero: {
-    badge: 'Free · About 1 minute · For crypto users in Ghana',
-    headline:
-      'The next time you convert cash to crypto, you should not have to wonder if you left money on the table.',
+    badge: 'Free checklist • 1 minute • No wallet details needed',
+    headline: 'Before your physical cash meets crypto, know what to check.',
     subheadline:
-      'Take a short assessment and unlock a practical checklist built for people who already move between physical cash and crypto. Know what to check before you confirm, so you keep more of what is yours.',
-    cta: 'Get My Free Checklist',
-    ctaHint: 'Takes about 1 minute',
+      'Crypto is full of bad rates, hidden costs, rushed decisions, and people you should not trust. Answer a few quick questions and unlock a simple checklist to help you protect your money before your next physical cash and crypto transaction.',
+    cta: 'Unlock the Free Checklist',
+    trustLine:
+      'We do not ask for wallet addresses, passwords, seed phrases, or account balances.',
   },
   outcomes: {
     title: 'What this guide helps you avoid',

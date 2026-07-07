@@ -33,7 +33,7 @@ export function Hero({ onStart }: HeroProps) {
 
         <div className="animate-fade-in-up stagger-4 mt-10 flex flex-col items-center gap-3">
           <CTAButton onClick={onStart}>{hero.cta}</CTAButton>
-          <CTABadge>{hero.ctaHint}</CTABadge>
+          <CTABadge>{hero.trustLine}</CTABadge>
         </div>
       </div>
     </section>

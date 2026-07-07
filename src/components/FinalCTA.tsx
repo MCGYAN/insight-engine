@@ -42,7 +42,7 @@ export function FinalCTA({ onStart }: FinalCTAProps) {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
-              {landingConfig.hero.ctaHint}
+              {landingConfig.hero.trustLine}
             </p>
           </div>
         </div>
