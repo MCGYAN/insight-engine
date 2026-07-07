@@ -35,15 +35,13 @@ const FIELD_MAP: Record<string, string> = {
   q8: CANONICAL_FIELDS.frequency,
   q9: CANONICAL_FIELDS.currentSolution,
   q10: CANONICAL_FIELDS.friction,
+  q11: CANONICAL_FIELDS.inertia,
   q10_contact: CANONICAL_FIELDS.contactConsent,
   q10_phone: CANONICAL_FIELDS.phoneNumber,
   q10_email: CANONICAL_FIELDS.email,
-  q10_whatsapp: CANONICAL_FIELDS.whatsappCommunity,
-  q11_inertia: CANONICAL_FIELDS.inertia,
-  q11_contact: CANONICAL_FIELDS.contactConsent,
-  q11_phone: CANONICAL_FIELDS.phoneNumber,
-  q11_email: CANONICAL_FIELDS.email,
-  q11_whatsapp: CANONICAL_FIELDS.whatsappCommunity,
+  q12_contact: CANONICAL_FIELDS.contactConsent,
+  q12_phone: CANONICAL_FIELDS.phoneNumber,
+  q12_email: CANONICAL_FIELDS.email,
 }
 
 export function buildQuestionIdToCanonicalMap(): Map<string, string> {

@@ -46,20 +46,13 @@ function getCanonicalMap(): Map<string, string> {
 
 function resolveContactFields(answers: SurveyAnswers): Record<string, string> {
   const isConverter = answers.q1 !== 'none'
-  const prefix = isConverter ? 'q11' : 'q10'
+  const prefix = isConverter ? 'q12' : 'q10'
 
-  const fields: Record<string, string> = {
+  return {
     [`${prefix}_contact`]: formatAnswerValue(answers[`${prefix}_contact`]),
     [`${prefix}_phone`]: formatRawValue(answers[`${prefix}_phone`]),
     [`${prefix}_email`]: formatRawValue(answers[`${prefix}_email`]),
-    [`${prefix}_whatsapp`]: formatAnswerValue(answers[`${prefix}_whatsapp`]),
   }
-
-  if (isConverter) {
-    fields.q11_inertia = formatAnswerValue(answers.q11_inertia)
-  }
-
-  return fields
 }
 
 export function mapAnswersToCanonicalFields(
@@ -83,6 +76,7 @@ export function mapAnswersToCanonicalFields(
     q8: formatAnswerValue(answers.q8),
     q9: resolveOptionWithOther(answers.q9, answers.q9_other),
     q10: resolveOptionWithOther(answers.q10, answers.q10_other),
+    q11: formatAnswerValue(answers.q11),
     ...resolveContactFields(answers),
   }
 

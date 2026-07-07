@@ -27,15 +27,13 @@ const DOWNSTREAM_KEYS = [
   'q9_other',
   'q10',
   'q10_other',
+  'q11',
   'q10_contact',
   'q10_phone',
   'q10_email',
-  'q10_whatsapp',
-  'q11_inertia',
-  'q11_contact',
-  'q11_phone',
-  'q11_email',
-  'q11_whatsapp',
+  'q12_contact',
+  'q12_phone',
+  'q12_email',
 ] as const
 
 function isInlineOtherValid(
@@ -50,17 +48,10 @@ function isInlineOtherValid(
 }
 
 function isContactValid(answers: SurveyAnswers, questionId: string): boolean {
-  const prefix = questionId === 'q11' ? 'q11' : 'q10'
+  const prefix = questionId === 'q12' ? 'q12' : 'q10'
   const consent = answers[`${prefix}_contact`]
-  const whatsapp = answers[`${prefix}_whatsapp`]
 
   if (consent !== 'yes' && consent !== 'no') return false
-  if (whatsapp !== 'yes' && whatsapp !== 'no') return false
-
-  if (prefix === 'q11') {
-    const inertia = answers.q11_inertia
-    if (typeof inertia !== 'string' || !inertia.length) return false
-  }
 
   const phone = answers[`${prefix}_phone`]
   if (typeof phone === 'string' && phone.trim() && !isValidPhoneNumber(phone)) {
@@ -185,9 +176,9 @@ export function useSurveyFlow() {
           delete next.q10_phone
           delete next.q10_email
         }
-        if (questionId === 'q11_contact' && value === 'no') {
-          delete next.q11_phone
-          delete next.q11_email
+        if (questionId === 'q12_contact' && value === 'no') {
+          delete next.q12_phone
+          delete next.q12_email
         }
 
         persist(next, currentIndex)

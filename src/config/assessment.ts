@@ -8,7 +8,7 @@ export type SurveyBranchId =
   | 'unknown'
 
 /** Max screens on the longest converter branch (Q1 = both). */
-export const MAX_SURVEY_QUESTIONS = 11
+export const MAX_SURVEY_QUESTIONS = 12
 
 const Q1_OPTIONS = [
   { id: 'cash_to_crypto', label: 'Changed physical cash into cryptocurrency' },
@@ -111,11 +111,9 @@ const Q10_FRICTION_OPTIONS = [
 ]
 
 const INERTIA_OPTIONS = [
-  { id: 'definitely', label: 'Definitely' },
-  { id: 'probably', label: 'Probably' },
+  { id: 'yes', label: 'Yes' },
   { id: 'not_sure', label: 'Not sure' },
-  { id: 'probably_not', label: 'Probably not' },
-  { id: 'definitely_not', label: 'Definitely not' },
+  { id: 'no', label: 'No' },
 ]
 
 const CONTACT_OPTIONS = [
@@ -265,31 +263,32 @@ const Q10_CONTACT: Question = {
   id: 'q10',
   section: 'assessment',
   type: 'contact',
-  label: 'May we contact you if we would like to better understand your experience?',
+  label: 'May we contact you to better understand your experience?',
   required: true,
-  description:
-    'If yes, you can optionally leave a phone number or email. We will only use these to follow up about your responses.',
-  footerNote:
-    'Joining the WhatsApp community is completely optional and separate from your answers.',
+  description: 'Optional phone or email below if yes.',
   options: CONTACT_OPTIONS,
 }
 
-const Q11_CONTACT: Question = {
+const Q11_INERTIA: Question = {
   id: 'q11',
   section: 'assessment',
-  type: 'contact',
-  label: 'May we contact you if we would like to better understand your experience?',
+  type: 'single',
+  label:
+    'If you needed to convert between physical cash and cryptocurrency again tomorrow, would you use the same method?',
   required: true,
-  description:
-    'If yes, you can optionally leave a phone number or email. We will only use these to follow up about your responses.',
-  footerNote:
-    'Joining the WhatsApp community is completely optional and separate from your answers.',
-  options: CONTACT_OPTIONS,
-  bullets: INERTIA_OPTIONS.map((o) => o.id),
+  options: INERTIA_OPTIONS,
+  forceType: 'inertia',
 }
 
-export const INERTIA_QUESTION_LABEL =
-  'If you needed to convert between physical cash and cryptocurrency again tomorrow, would you use the same method?'
+const Q12_CONTACT: Question = {
+  id: 'q12',
+  section: 'assessment',
+  type: 'contact',
+  label: 'May we contact you to better understand your experience?',
+  required: true,
+  description: 'Optional phone or email below if yes.',
+  options: CONTACT_OPTIONS,
+}
 
 export function resolveSurveyBranch(q1?: string): SurveyBranchId {
   if (!q1) return 'unknown'
@@ -306,8 +305,8 @@ export function isConverterPath(q1?: string): boolean {
 
 /**
  * Non-converters: Q1 → Q2A → Q3 → Q4 → Q10 contact (5 screens).
- * Converters (single direction): Q1 → Q2B → Q3 → Q4 → Q6–Q10 → Q11 contact (10 screens).
- * Converters (both): adds Q5 direction (11 screens).
+ * Converters (single direction): Q1 → Q2B → Q3 → Q4 → Q6–Q11 → Q12 contact (11 screens).
+ * Converters (both): adds Q5 direction (12 screens).
  */
 export function getSurveyQuestions(
   answers: Record<string, string | string[] | undefined>,
@@ -328,7 +327,7 @@ export function getSurveyQuestions(
     flow.push(Q5)
   }
 
-  flow.push(Q6, Q7, Q8, Q9, Q10_FRICTION, Q11_CONTACT)
+  flow.push(Q6, Q7, Q8, Q9, Q10_FRICTION, Q11_INERTIA, Q12_CONTACT)
 
   return flow
 }

@@ -1,6 +1,5 @@
 'use client'
 
-import { INERTIA_QUESTION_LABEL } from '@/config/assessment'
 import { INPUT_MAX_LENGTH } from '@/utils/inputSanitizer'
 import type { Question } from '@/types/Question'
 
@@ -22,37 +21,12 @@ export function QuestionCard({
   const maxLength = INPUT_MAX_LENGTH[question.id]
 
   if (question.type === 'contact') {
-    const prefix = question.id === 'q11' ? 'q11' : 'q10'
-    const includeInertia = question.id === 'q11'
+    const prefix = question.id === 'q12' ? 'q12' : 'q10'
     const contact = answers[`${prefix}_contact`]
     const showContactFields = contact === 'yes'
 
     return (
       <div className="space-y-6">
-        {includeInertia && (
-          <div>
-            <p className="mb-3 text-base font-medium text-text">
-              {INERTIA_QUESTION_LABEL}
-            </p>
-            <div className="space-y-2.5" role="radiogroup" aria-label={INERTIA_QUESTION_LABEL}>
-              {[
-                { id: 'definitely', label: 'Definitely' },
-                { id: 'probably', label: 'Probably' },
-                { id: 'not_sure', label: 'Not sure' },
-                { id: 'probably_not', label: 'Probably not' },
-                { id: 'definitely_not', label: 'Definitely not' },
-              ].map((option) => (
-                <OptionButton
-                  key={option.id}
-                  label={option.label}
-                  selected={answers.q11_inertia === option.id}
-                  onClick={() => onChange('q11_inertia', option.id)}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
         <div className="space-y-2.5" role="radiogroup" aria-label={question.label}>
           {question.options?.map((option) => (
             <OptionButton
@@ -98,25 +72,6 @@ export function QuestionCard({
             </div>
           </div>
         )}
-
-        <div>
-          <p className="mb-3 text-base font-medium text-text">
-            Would you like to receive future practical guides and research
-            insights through our WhatsApp community?
-          </p>
-          <div className="space-y-2.5" role="radiogroup" aria-label="WhatsApp community">
-            <OptionButton
-              label="Yes"
-              selected={answers[`${prefix}_whatsapp`] === 'yes'}
-              onClick={() => onChange(`${prefix}_whatsapp`, 'yes')}
-            />
-            <OptionButton
-              label="No"
-              selected={answers[`${prefix}_whatsapp`] === 'no'}
-              onClick={() => onChange(`${prefix}_whatsapp`, 'no')}
-            />
-          </div>
-        </div>
       </div>
     )
   }

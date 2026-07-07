@@ -9,8 +9,8 @@ export const INPUT_MAX_LENGTH: Record<string, number> = {
   q10_other: 200,
   q10_phone: 20,
   q10_email: 120,
-  q11_phone: 20,
-  q11_email: 120,
+  q12_phone: 20,
+  q12_email: 120,
 }
 
 export function sanitizeUserInput(value: string, fieldId?: string): string {
