@@ -118,20 +118,21 @@ export function SurveyEngine({ onExit }: SurveyEngineProps) {
       {isSubmitting && <SubmittingOverlay />}
 
       {/* Top bar */}
-      <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between border-b border-border/60 bg-surface/90 px-5 backdrop-blur-md">
+      <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between border-b border-border/60 bg-surface/90 px-4 backdrop-blur-md sm:px-5">
         <button
           type="button"
           onClick={index > 1 ? handleBack : (onExit ?? resetToLanding)}
-          className="flex h-10 w-10 items-center justify-center rounded-xl text-muted transition-colors hover:bg-surface hover:text-text"
+          className="inline-flex min-h-11 min-w-11 items-center gap-1.5 rounded-xl border border-border bg-surface px-3 py-2 text-sm font-semibold text-text shadow-sm transition-colors hover:border-primary/30 hover:bg-background active:scale-[0.98] disabled:opacity-40"
           disabled={isSubmitting}
-          aria-label="Go back"
+          aria-label={index > 1 ? 'Go back to previous question' : 'Leave survey'}
         >
           <svg
-            className="h-5 w-5"
+            className="h-5 w-5 shrink-0 text-primary"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeWidth={2}
+            strokeWidth={2.5}
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -139,11 +140,12 @@ export function SurveyEngine({ onExit }: SurveyEngineProps) {
               d="M15 19l-7-7 7-7"
             />
           </svg>
+          <span>{index > 1 ? 'Back' : 'Exit'}</span>
         </button>
         <span className="text-sm font-semibold text-primary">
           {landingConfig.guide.shortTitle}
         </span>
-        <div className="w-10" aria-hidden="true" />
+        <div className="w-[4.75rem] sm:w-20" aria-hidden="true" />
       </header>
 
       {/* Question area */}
