@@ -3,7 +3,7 @@ import { branches } from './branches'
 import { commonQuestions, universalQuestions } from './questions'
 
 export const surveyConfig: SurveyConfig = {
-  id: 'afrimoney-discovery-v1',
+  id: 'afrimoney-discovery-v2',
   title: 'Cash and Crypto Conversion Discovery',
   universalQuestions,
   branches,

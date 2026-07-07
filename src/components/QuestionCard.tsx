@@ -1,5 +1,6 @@
 'use client'
 
+import { INERTIA_QUESTION_LABEL } from '@/config/assessment'
 import { INPUT_MAX_LENGTH } from '@/utils/inputSanitizer'
 import type { Question } from '@/types/Question'
 
@@ -21,18 +22,44 @@ export function QuestionCard({
   const maxLength = INPUT_MAX_LENGTH[question.id]
 
   if (question.type === 'contact') {
-    const contact = answers.q10_contact
+    const prefix = question.id === 'q11' ? 'q11' : 'q10'
+    const includeInertia = question.id === 'q11'
+    const contact = answers[`${prefix}_contact`]
     const showContactFields = contact === 'yes'
 
     return (
       <div className="space-y-6">
+        {includeInertia && (
+          <div>
+            <p className="mb-3 text-base font-medium text-text">
+              {INERTIA_QUESTION_LABEL}
+            </p>
+            <div className="space-y-2.5" role="radiogroup" aria-label={INERTIA_QUESTION_LABEL}>
+              {[
+                { id: 'definitely', label: 'Definitely' },
+                { id: 'probably', label: 'Probably' },
+                { id: 'not_sure', label: 'Not sure' },
+                { id: 'probably_not', label: 'Probably not' },
+                { id: 'definitely_not', label: 'Definitely not' },
+              ].map((option) => (
+                <OptionButton
+                  key={option.id}
+                  label={option.label}
+                  selected={answers.q11_inertia === option.id}
+                  onClick={() => onChange('q11_inertia', option.id)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="space-y-2.5" role="radiogroup" aria-label={question.label}>
           {question.options?.map((option) => (
             <OptionButton
               key={option.id}
               label={option.label}
               selected={contact === option.id}
-              onClick={() => onChange('q10_contact', option.id)}
+              onClick={() => onChange(`${prefix}_contact`, option.id)}
             />
           ))}
         </div>
@@ -47,10 +74,10 @@ export function QuestionCard({
                 type="tel"
                 inputMode="tel"
                 autoComplete="tel"
-                value={(answers.q10_phone as string) ?? ''}
-                onChange={(e) => onChange('q10_phone', e.target.value)}
+                value={(answers[`${prefix}_phone`] as string) ?? ''}
+                onChange={(e) => onChange(`${prefix}_phone`, e.target.value)}
                 placeholder="e.g. 0554229375 or +233554229375"
-                maxLength={INPUT_MAX_LENGTH.q10_phone}
+                maxLength={INPUT_MAX_LENGTH[`${prefix}_phone`]}
                 className={inputBase}
               />
             </div>
@@ -62,10 +89,10 @@ export function QuestionCard({
                 type="email"
                 inputMode="email"
                 autoComplete="email"
-                value={(answers.q10_email as string) ?? ''}
-                onChange={(e) => onChange('q10_email', e.target.value)}
+                value={(answers[`${prefix}_email`] as string) ?? ''}
+                onChange={(e) => onChange(`${prefix}_email`, e.target.value)}
                 placeholder="e.g. you@email.com"
-                maxLength={INPUT_MAX_LENGTH.q10_email}
+                maxLength={INPUT_MAX_LENGTH[`${prefix}_email`]}
                 className={inputBase}
               />
             </div>
@@ -80,13 +107,13 @@ export function QuestionCard({
           <div className="space-y-2.5" role="radiogroup" aria-label="WhatsApp community">
             <OptionButton
               label="Yes"
-              selected={answers.q10_whatsapp === 'yes'}
-              onClick={() => onChange('q10_whatsapp', 'yes')}
+              selected={answers[`${prefix}_whatsapp`] === 'yes'}
+              onClick={() => onChange(`${prefix}_whatsapp`, 'yes')}
             />
             <OptionButton
               label="No"
-              selected={answers.q10_whatsapp === 'no'}
-              onClick={() => onChange('q10_whatsapp', 'no')}
+              selected={answers[`${prefix}_whatsapp`] === 'no'}
+              onClick={() => onChange(`${prefix}_whatsapp`, 'no')}
             />
           </div>
         </div>

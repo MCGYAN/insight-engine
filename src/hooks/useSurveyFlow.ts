@@ -14,19 +14,28 @@ const DOWNSTREAM_KEYS = [
   'q2a',
   'q2a_other',
   'q2b',
+  'q2b_other',
   'q3',
+  'q3_other',
   'q4',
   'q5',
-  'q5_other',
   'q6',
+  'q6_other',
   'q7',
-  'q7_other',
   'q8',
   'q9',
+  'q9_other',
+  'q10',
+  'q10_other',
   'q10_contact',
   'q10_phone',
   'q10_email',
   'q10_whatsapp',
+  'q11_inertia',
+  'q11_contact',
+  'q11_phone',
+  'q11_email',
+  'q11_whatsapp',
 ] as const
 
 function isInlineOtherValid(
@@ -40,18 +49,25 @@ function isInlineOtherValid(
   return typeof otherVal === 'string' && otherVal.trim().length > 0
 }
 
-function isContactValid(answers: SurveyAnswers): boolean {
-  const consent = answers.q10_contact
-  const whatsapp = answers.q10_whatsapp
+function isContactValid(answers: SurveyAnswers, questionId: string): boolean {
+  const prefix = questionId === 'q11' ? 'q11' : 'q10'
+  const consent = answers[`${prefix}_contact`]
+  const whatsapp = answers[`${prefix}_whatsapp`]
+
   if (consent !== 'yes' && consent !== 'no') return false
   if (whatsapp !== 'yes' && whatsapp !== 'no') return false
 
-  const phone = answers.q10_phone
+  if (prefix === 'q11') {
+    const inertia = answers.q11_inertia
+    if (typeof inertia !== 'string' || !inertia.length) return false
+  }
+
+  const phone = answers[`${prefix}_phone`]
   if (typeof phone === 'string' && phone.trim() && !isValidPhoneNumber(phone)) {
     return false
   }
 
-  const email = answers.q10_email
+  const email = answers[`${prefix}_email`]
   if (
     typeof email === 'string' &&
     email.trim() &&
@@ -127,7 +143,7 @@ export function useSurveyFlow() {
       if (!question.required) return true
 
       if (question.type === 'contact') {
-        return isContactValid(answers)
+        return isContactValid(answers, question.id)
       }
 
       const answer = answers[question.id]
@@ -160,11 +176,18 @@ export function useSurveyFlow() {
 
         if (questionId === 'q1') clearDownstreamAnswers(next, 'q1')
         if (questionId === 'q2a' && value !== 'other') delete next.q2a_other
-        if (questionId === 'q5' && value !== 'other') delete next.q5_other
-        if (questionId === 'q7' && value !== 'other') delete next.q7_other
+        if (questionId === 'q2b' && value !== 'other') delete next.q2b_other
+        if (questionId === 'q3' && value !== 'other') delete next.q3_other
+        if (questionId === 'q6' && value !== 'other') delete next.q6_other
+        if (questionId === 'q9' && value !== 'other') delete next.q9_other
+        if (questionId === 'q10' && value !== 'other') delete next.q10_other
         if (questionId === 'q10_contact' && value === 'no') {
           delete next.q10_phone
           delete next.q10_email
+        }
+        if (questionId === 'q11_contact' && value === 'no') {
+          delete next.q11_phone
+          delete next.q11_email
         }
 
         persist(next, currentIndex)

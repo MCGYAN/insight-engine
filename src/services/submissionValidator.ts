@@ -15,14 +15,15 @@ const ALLOWED_BRANCH_IDS = new Set<SurveyBranchId>([
 
 const FIELD_MAX_LENGTH: Record<string, number> = {
   [CANONICAL_FIELDS.recentActivity]: 50,
-  [CANONICAL_FIELDS.nonConverterProfile]: 200,
+  [CANONICAL_FIELDS.icpProfile]: 200,
+  [CANONICAL_FIELDS.homeRegion]: 50,
+  [CANONICAL_FIELDS.homeTown]: 120,
   [CANONICAL_FIELDS.lastConversionDirection]: 50,
+  [CANONICAL_FIELDS.transactionLocation]: 200,
   [CANONICAL_FIELDS.transactionValue]: 50,
   [CANONICAL_FIELDS.frequency]: 50,
   [CANONICAL_FIELDS.currentSolution]: 200,
-  [CANONICAL_FIELDS.pullFactors]: 500,
   [CANONICAL_FIELDS.friction]: 200,
-  [CANONICAL_FIELDS.desiredImprovement]: 2000,
   [CANONICAL_FIELDS.inertia]: 50,
   [CANONICAL_FIELDS.contactConsent]: 10,
   [CANONICAL_FIELDS.phoneNumber]: 20,

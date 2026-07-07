@@ -44,6 +44,24 @@ function getCanonicalMap(): Map<string, string> {
   return canonicalMapCache
 }
 
+function resolveContactFields(answers: SurveyAnswers): Record<string, string> {
+  const isConverter = answers.q1 !== 'none'
+  const prefix = isConverter ? 'q11' : 'q10'
+
+  const fields: Record<string, string> = {
+    [`${prefix}_contact`]: formatAnswerValue(answers[`${prefix}_contact`]),
+    [`${prefix}_phone`]: formatRawValue(answers[`${prefix}_phone`]),
+    [`${prefix}_email`]: formatRawValue(answers[`${prefix}_email`]),
+    [`${prefix}_whatsapp`]: formatAnswerValue(answers[`${prefix}_whatsapp`]),
+  }
+
+  if (isConverter) {
+    fields.q11_inertia = formatAnswerValue(answers.q11_inertia)
+  }
+
+  return fields
+}
+
 export function mapAnswersToCanonicalFields(
   answers: SurveyAnswers,
 ): Record<string, string> {
@@ -56,18 +74,16 @@ export function mapAnswersToCanonicalFields(
   const resolved: Record<string, string> = {
     q1: formatAnswerValue(answers.q1),
     q2a: resolveOptionWithOther(answers.q2a, answers.q2a_other),
-    q2b: formatAnswerValue(answers.q2b),
-    q3: formatAnswerValue(answers.q3),
+    q2b: resolveOptionWithOther(answers.q2b, answers.q2b_other),
+    q3: resolveOptionWithOther(answers.q3, answers.q3_other),
     q4: formatAnswerValue(answers.q4),
-    q5: resolveOptionWithOther(answers.q5, answers.q5_other),
-    q6: formatAnswerValue(answers.q6),
-    q7: resolveOptionWithOther(answers.q7, answers.q7_other),
+    q5: formatAnswerValue(answers.q5),
+    q6: resolveOptionWithOther(answers.q6, answers.q6_other),
+    q7: formatAnswerValue(answers.q7),
     q8: formatAnswerValue(answers.q8),
-    q9: formatAnswerValue(answers.q9),
-    q10_contact: formatAnswerValue(answers.q10_contact),
-    q10_phone: formatRawValue(answers.q10_phone),
-    q10_email: formatRawValue(answers.q10_email),
-    q10_whatsapp: formatAnswerValue(answers.q10_whatsapp),
+    q9: resolveOptionWithOther(answers.q9, answers.q9_other),
+    q10: resolveOptionWithOther(answers.q10, answers.q10_other),
+    ...resolveContactFields(answers),
   }
 
   for (const [questionId, value] of Object.entries(resolved)) {
