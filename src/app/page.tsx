@@ -1,5 +1,7 @@
-import { HomePage } from '@/components/HomePage'
+'use client'
+
+import { SurveyEngine } from '@/components/SurveyEngine'
 
 export default function Page() {
-  return <HomePage />
+  return <SurveyEngine />
 }
